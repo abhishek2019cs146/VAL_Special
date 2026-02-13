@@ -39,24 +39,9 @@ font-size:18px;
 cursor:pointer;
 }
 
-.gallery img{
-width:90%;
-max-width:250px;
-border-radius:15px;
-margin:10px;
-}
-
-#typeText{
-max-width:90%;
-font-size:18px;
-line-height:1.6;
-}
-
 .dark{
 background:black !important;
 }
-
-/* ❤️ HEART POP */
 
 .heart{
 position:fixed;
@@ -83,21 +68,23 @@ pointer-events:none;
 <source src="heartbeat.mp3" type="audio/mp3">
 </audio>
 
+<!-- LANDING -->
+
 <section id="landing">
 <h1>Hey Priya 💖</h1>
 <p>I made something special for you…</p>
 <button onclick="start()">Start 💫</button>
 </section>
 
+<!-- MEMORIES -->
+
 <section id="memories" class="hidden">
 <h2>Our Memories 📸</h2>
-<div class="gallery">
-<img src="img1.jpg">
-<img src="img2.jpg">
-<img src="img3.jpg">
-</div>
-<button onclick="showReasons()">Next ➜</button>
+<div id="memoryContainer"></div>
+<button onclick="nextMemory()">Next ➜</button>
 </section>
+
+<!-- REASONS -->
 
 <section id="reasons" class="hidden">
 <h2>Tap to see why I love you 💖</h2>
@@ -105,6 +92,8 @@ pointer-events:none;
 <button onclick="nextReason()">Tap 💫</button>
 <button onclick="showFuture()">Next ➜</button>
 </section>
+
+<!-- FUTURE -->
 
 <section id="future" class="hidden">
 <h2>Our Future 🌍</h2>
@@ -115,11 +104,15 @@ pointer-events:none;
 <button onclick="startHeartbeat()">Next ➜</button>
 </section>
 
+<!-- HEARTBEAT -->
+
 <section id="heartbeatSection" class="hidden">
 <h2>❤️ Every heartbeat says your name…</h2>
 <p>(tap anywhere)</p>
 <div id="typeText"></div>
 </section>
+
+<!-- PROPOSAL -->
 
 <section id="proposal" class="hidden">
 <h2>Will You Be My Valentine? 💘</h2>
@@ -147,8 +140,9 @@ const beat = document.getElementById("beat");
 const reasonText = document.getElementById("reasonText");
 const typeText = document.getElementById("typeText");
 const finalMsg = document.getElementById("finalMsg");
+const memoryContainer = document.getElementById("memoryContainer");
 
-/* ❤️ HEART POP EFFECT */
+/* ❤️ HEART POP */
 
 function createHeart(x,y){
 const heart=document.createElement("div");
@@ -160,31 +154,80 @@ document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),1000);
 }
 
-document.addEventListener("click",(e)=>{
-createHeart(e.clientX,e.clientY);
-});
-
+document.addEventListener("click",(e)=>createHeart(e.clientX,e.clientY));
 document.addEventListener("touchstart",(e)=>{
-const touch=e.touches[0];
-createHeart(touch.clientX,touch.clientY);
+const t=e.touches[0];
+createHeart(t.clientX,t.clientY);
 });
 
-/* NAVIGATION */
+/* START */
 
 function start(){
 music.play();
 landing.classList.add("hidden");
 memories.classList.remove("hidden");
+showMemory();
 }
 
-function showReasons(){
+/* MEMORIES DATA */
+
+const memoriesData = [
+
+{ type:"image", src:"img1.jpg", caption:"The day we first met ❤️" },
+{ type:"image", src:"img2.jpg", caption:"Our first selfie 😍" },
+{ type:"image", src:"img3.jpg", caption:"My favourite day with you 🌸" },
+{ type:"video", src:"memory.mp4", caption:"You = my happiest place 🎬💖" },
+{ type:"image", src:"img4.jpg", caption:"Forever starts here 💞" }
+
+];
+
+let memoryIndex = 0;
+
+function showMemory(){
+
+memoryContainer.innerHTML="";
+
+const item = memoriesData[memoryIndex];
+
+if(item.type==="image"){
+
+music.play();
+
+memoryContainer.innerHTML = `
+<img src="${item.src}" style="width:90%;max-width:400px;border-radius:20px;">
+<p>${item.caption}</p>
+`;
+
+}
+
+if(item.type==="video"){
+
+music.pause();
+
+memoryContainer.innerHTML = `
+<video controls autoplay playsinline
+style="width:90%;max-width:400px;border-radius:20px;">
+<source src="${item.src}" type="video/mp4">
+</video>
+<p>${item.caption}</p>
+`;
+
+}
+
+}
+
+function nextMemory(){
+
+memoryIndex++;
+
+if(memoryIndex < memoriesData.length){
+showMemory();
+}else{
 memories.classList.add("hidden");
 reasons.classList.remove("hidden");
+music.play();
 }
 
-function showFuture(){
-reasons.classList.add("hidden");
-future.classList.remove("hidden");
 }
 
 /* REASONS */
@@ -205,7 +248,12 @@ r=(r+1)%reasonsList.length;
 reasonText.innerText=reasonsList[r];
 }
 
-/* HEARTBEAT MODE */
+function showFuture(){
+reasons.classList.add("hidden");
+future.classList.remove("hidden");
+}
+
+/* HEARTBEAT */
 
 const paragraph=[
 "In the quiet moments between my heartbeats,",
@@ -224,15 +272,12 @@ let p=0;
 function startHeartbeat(){
 
 future.classList.add("hidden");
-
-/* stop romantic song before heartbeat */
 music.pause();
-music.currentTime = 0;
 
 heartbeatSection.classList.remove("hidden");
 document.body.classList.add("dark");
 
-beat.currentTime = 0;
+beat.currentTime=0;
 beat.play();
 }
 
@@ -243,13 +288,10 @@ typeText.innerHTML+=paragraph[p]+"<br><br>";
 p++;
 }
 else{
-
 beat.pause();
 document.body.classList.remove("dark");
 heartbeatSection.classList.add("hidden");
 proposal.classList.remove("hidden");
-
-/* resume romantic song */
 music.play();
 }
 
