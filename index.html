@@ -54,7 +54,20 @@ line-height:1.6;
 
 .dark{
 background:black !important;
-color:white;
+}
+
+/* ❤️ HEART POP */
+
+.heart{
+position:fixed;
+font-size:20px;
+animation:floatUp 1s ease-out forwards;
+pointer-events:none;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0) scale(1);opacity:1;}
+100%{transform:translateY(-80px) scale(1.8);opacity:0;}
 }
 
 </style>
@@ -70,15 +83,11 @@ color:white;
 <source src="heartbeat.mp3" type="audio/mp3">
 </audio>
 
-<!-- LANDING -->
-
 <section id="landing">
 <h1>Hey Priya 💖</h1>
 <p>I made something special for you…</p>
 <button onclick="start()">Start 💫</button>
 </section>
-
-<!-- MEMORIES -->
 
 <section id="memories" class="hidden">
 <h2>Our Memories 📸</h2>
@@ -90,16 +99,12 @@ color:white;
 <button onclick="showReasons()">Next ➜</button>
 </section>
 
-<!-- REASONS -->
-
 <section id="reasons" class="hidden">
 <h2>Tap to see why I love you 💖</h2>
 <h3 id="reasonText">Your kindness 💖</h3>
 <button onclick="nextReason()">Tap 💫</button>
 <button onclick="showFuture()">Next ➜</button>
 </section>
-
-<!-- FUTURE -->
 
 <section id="future" class="hidden">
 <h2>Our Future 🌍</h2>
@@ -110,15 +115,11 @@ color:white;
 <button onclick="startHeartbeat()">Next ➜</button>
 </section>
 
-<!-- HEARTBEAT -->
-
 <section id="heartbeatSection" class="hidden">
 <h2>❤️ Every heartbeat says your name…</h2>
 <p>(tap anywhere)</p>
 <div id="typeText"></div>
 </section>
-
-<!-- PROPOSAL -->
 
 <section id="proposal" class="hidden">
 <h2>Will You Be My Valentine? 💘</h2>
@@ -147,6 +148,27 @@ const reasonText = document.getElementById("reasonText");
 const typeText = document.getElementById("typeText");
 const finalMsg = document.getElementById("finalMsg");
 
+/* ❤️ HEART POP EFFECT */
+
+function createHeart(x,y){
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="❤️";
+heart.style.left=x+"px";
+heart.style.top=y+"px";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),1000);
+}
+
+document.addEventListener("click",(e)=>{
+createHeart(e.clientX,e.clientY);
+});
+
+document.addEventListener("touchstart",(e)=>{
+const touch=e.touches[0];
+createHeart(touch.clientX,touch.clientY);
+});
+
 /* NAVIGATION */
 
 function start(){
@@ -165,7 +187,7 @@ reasons.classList.add("hidden");
 future.classList.remove("hidden");
 }
 
-/* REASONS LOGIC */
+/* REASONS */
 
 const reasonsList=[
 "Your kindness 💖",
@@ -200,9 +222,17 @@ const paragraph=[
 let p=0;
 
 function startHeartbeat(){
+
 future.classList.add("hidden");
+
+/* stop romantic song before heartbeat */
+music.pause();
+music.currentTime = 0;
+
 heartbeatSection.classList.remove("hidden");
 document.body.classList.add("dark");
+
+beat.currentTime = 0;
 beat.play();
 }
 
@@ -213,10 +243,14 @@ typeText.innerHTML+=paragraph[p]+"<br><br>";
 p++;
 }
 else{
+
 beat.pause();
 document.body.classList.remove("dark");
 heartbeatSection.classList.add("hidden");
 proposal.classList.remove("hidden");
+
+/* resume romantic song */
+music.play();
 }
 
 });
