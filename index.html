@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Love ❤️❤️</title>
+<meta charset="UTF-8">
+<title>For My Love ❤️❤️❤️</title>
 
 <style>
 
@@ -36,45 +36,26 @@ background:#ff4d6d;
 color:white;
 font-size:18px;
 cursor:pointer;
-width:220px;
-max-width:80%;
-}
-
-.gallery{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
 }
 
 .gallery img{
 width:90%;
 max-width:250px;
-margin:10px;
 border-radius:15px;
+margin:10px;
 }
 
-input{
-padding:12px;
-border-radius:12px;
-border:none;
-margin:8px;
-width:80%;
-max-width:300px;
-font-size:16px;
+#typeText{
+max-width:90%;
+font-size:18px;
+line-height:1.6;
 }
 
-/* bubbles */
+/* heartbeat mode */
 
-.bubble{
-position:fixed;
-border-radius:50%;
-pointer-events:none;
-animation:pop 0.8s ease-out forwards;
-}
-
-@keyframes pop{
-0%{transform:scale(0.5);opacity:1;}
-100%{transform:scale(2);opacity:0;}
+.heartbeat{
+background:black;
+color:white;
 }
 
 </style>
@@ -86,11 +67,18 @@ animation:pop 0.8s ease-out forwards;
 <source src="song.mp3" type="audio/mp3">
 </audio>
 
+<audio id="beat">
+<source src="heartbeat.mp3" type="audio/mp3">
+</audio>
+
+<!-- LANDING -->
+
 <section id="landing">
 <h1>Hey Priya 💖</h1>
-<p>I made something special for you…</p>
-<button onclick="startSite()">Start 💫</button>
+<button onclick="start()">Start</button>
 </section>
+
+<!-- MEMORIES -->
 
 <section id="memories" class="hidden">
 <h2>Our Memories 📸</h2>
@@ -99,28 +87,45 @@ animation:pop 0.8s ease-out forwards;
 <img src="img2.jpg">
 <img src="img3.jpg">
 </div>
-<button onclick="startQuiz()">Next ➜</button>
+<button onclick="reasons()">Next ➜</button>
 </section>
 
-<section id="quiz" class="hidden">
-<h2>Love Quiz 🧠</h2>
+<!-- REASONS -->
 
-<p>Where did we first meet?</p>
-<input type="text">
-
-<p>Who said I love you first?</p>
-<input type="text">
-
-<p>What’s my favourite thing about you?</p>
-<input type="text">
-
-<button onclick="showProposal()">Submit ❤️</button>
+<section id="reasons" class="hidden">
+<h2>Tap to see why I love you 💖</h2>
+<h3 id="reasonText">Your kindness 💖</h3>
+<button onclick="nextReason()">Tap 💫</button>
+<button onclick="future()">Next ➜</button>
 </section>
+
+<!-- FUTURE -->
+
+<section id="future" class="hidden">
+<h2>Our Future 🌍</h2>
+
+<p>🌙 Late night walks</p>
+<p>☕ Coffee dates</p>
+<p>✈️ Trips together</p>
+<p>🏡 Our little home</p>
+
+<button onclick="heartbeatMode()">Next ➜</button>
+</section>
+
+<!-- HEARTBEAT MODE -->
+
+<section id="heartbeatSection" class="hidden">
+<h2>❤️ Every heartbeat says your name…</h2>
+<p>(tap to continue)</p>
+<div id="typeText"></div>
+</section>
+
+<!-- PROPOSAL -->
 
 <section id="proposal" class="hidden">
-<h2>So… Will You Be My Valentine? 💘</h2>
+<h2>Will You Be My Valentine? 💘</h2>
 
-<button onclick="sayYes()">YES 😍</button>
+<button onclick="yes()">YES 😍</button>
 <button id="noBtn">NO 😜</button>
 
 <h3 id="finalMsg"></h3>
@@ -132,93 +137,102 @@ animation:pop 0.8s ease-out forwards;
 
 /* navigation */
 
-function startSite(){
-document.getElementById("music").play();
+function start(){
+music.play();
 landing.classList.add("hidden");
 memories.classList.remove("hidden");
 }
 
-function startQuiz(){
+function reasons(){
 memories.classList.add("hidden");
-quiz.classList.remove("hidden");
+reasonsSection.classList.remove("hidden");
 }
 
-function showProposal(){
-quiz.classList.add("hidden");
+function future(){
+reasonsSection.classList.add("hidden");
+futureSection.classList.remove("hidden");
+}
+
+/* reasons logic */
+
+const reasonsList=[
+"Your kindness 💖",
+"Your smile 🌸",
+"The way you say my name 😭",
+"How you make my worst days better 🫶",
+"Your cute anger 😆",
+"Everything about you ❤️"
+];
+
+let r=0;
+
+function nextReason(){
+r=(r+1)%reasonsList.length;
+reasonText.innerText=reasonsList[r];
+}
+
+/* heartbeat mode */
+
+const paragraph=[
+"In the quiet moments between my heartbeats,",
+"it’s your name that echoes softly inside me.",
+"In dreams I never knew I had,",
+"it’s your smile that rises like sunrise after the longest night.",
+"You are the reason ordinary days feel magical,",
+"the reason my world has learned how to blush.",
+"So today I’m not just asking a question…",
+"I’m making a promise.",
+"Will you be my Valentine — forever? ❤️"
+];
+
+let p=0;
+
+function heartbeatMode(){
+futureSection.classList.add("hidden");
+heartbeatSection.classList.remove("hidden");
+document.body.classList.add("heartbeat");
+beat.play();
+}
+
+heartbeatSection.addEventListener("click",()=>{
+
+if(p<paragraph.length){
+typeText.innerHTML+=paragraph[p]+"<br><br>";
+p++;
+}else{
+beat.pause();
+document.body.classList.remove("heartbeat");
+heartbeatSection.classList.add("hidden");
 proposal.classList.remove("hidden");
 }
 
+});
+
 /* YES */
 
-function sayYes(){
+function yes(){
 confetti();
-document.getElementById("finalMsg").innerHTML=
-"YAYYYYY ❤️ Next location: Our Valentine’s Date 🥰";
+finalMsg.innerHTML="You just made me the happiest person alive ❤️";
 }
 
-/* runaway NO button */
+/* runaway NO */
 
 const noBtn=document.getElementById("noBtn");
 
-function moveButton(){
+function move(){
 
 const rect=noBtn.getBoundingClientRect();
 
 const maxX=window.innerWidth-rect.width-10;
 const maxY=window.innerHeight-rect.height-10;
 
-const newX=Math.random()*maxX;
-const newY=Math.random()*maxY;
-
 noBtn.style.position="fixed";
-noBtn.style.left=newX+"px";
-noBtn.style.top=newY+"px";
+noBtn.style.left=Math.random()*maxX+"px";
+noBtn.style.top=Math.random()*maxY+"px";
 }
 
-noBtn.addEventListener("mouseover",moveButton);
-noBtn.addEventListener("click",moveButton);
-noBtn.addEventListener("touchstart",(e)=>{
-moveButton();
-popBubbles(e.touches[0].clientX,e.touches[0].clientY);
-});
-
-/* bubbles */
-
-function createBubble(x,y){
-
-const bubble=document.createElement("div");
-
-bubble.className="bubble";
-
-const size=Math.random()*20+10;
-
-bubble.style.width=size+"px";
-bubble.style.height=size+"px";
-bubble.style.left=x+"px";
-bubble.style.top=y+"px";
-bubble.style.background="rgba(255,255,255,0.8)";
-
-document.body.appendChild(bubble);
-
-setTimeout(()=>bubble.remove(),800);
-}
-
-function popBubbles(x,y){
-for(let i=0;i<6;i++){
-createBubble(x,y);
-}
-}
-
-/* finger & mouse trail */
-
-document.addEventListener("touchmove",(e)=>{
-const touch=e.touches[0];
-createBubble(touch.clientX,touch.clientY);
-});
-
-document.addEventListener("mousemove",(e)=>{
-createBubble(e.clientX,e.clientY);
-});
+noBtn.addEventListener("mouseover",move);
+noBtn.addEventListener("touchstart",move);
 
 </script>
 
