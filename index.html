@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<title>For My Love ❤️❤️❤️</title>
+<title>For My Love ❤️</title>
 
 <style>
 
@@ -14,6 +14,7 @@ text-align:center;
 background:linear-gradient(135deg,#ff9a9e,#fad0c4);
 color:white;
 overflow:hidden;
+transition:0.5s;
 }
 
 section{
@@ -51,10 +52,8 @@ font-size:18px;
 line-height:1.6;
 }
 
-/* heartbeat mode */
-
-.heartbeat{
-background:black;
+.dark{
+background:black !important;
 color:white;
 }
 
@@ -67,7 +66,7 @@ color:white;
 <source src="song.mp3" type="audio/mp3">
 </audio>
 
-<audio id="beat">
+<audio id="beat" loop>
 <source src="heartbeat.mp3" type="audio/mp3">
 </audio>
 
@@ -75,7 +74,8 @@ color:white;
 
 <section id="landing">
 <h1>Hey Priya 💖</h1>
-<button onclick="start()">Start</button>
+<p>I made something special for you…</p>
+<button onclick="start()">Start 💫</button>
 </section>
 
 <!-- MEMORIES -->
@@ -87,7 +87,7 @@ color:white;
 <img src="img2.jpg">
 <img src="img3.jpg">
 </div>
-<button onclick="reasons()">Next ➜</button>
+<button onclick="showReasons()">Next ➜</button>
 </section>
 
 <!-- REASONS -->
@@ -96,27 +96,25 @@ color:white;
 <h2>Tap to see why I love you 💖</h2>
 <h3 id="reasonText">Your kindness 💖</h3>
 <button onclick="nextReason()">Tap 💫</button>
-<button onclick="future()">Next ➜</button>
+<button onclick="showFuture()">Next ➜</button>
 </section>
 
 <!-- FUTURE -->
 
 <section id="future" class="hidden">
 <h2>Our Future 🌍</h2>
-
 <p>🌙 Late night walks</p>
 <p>☕ Coffee dates</p>
 <p>✈️ Trips together</p>
 <p>🏡 Our little home</p>
-
-<button onclick="heartbeatMode()">Next ➜</button>
+<button onclick="startHeartbeat()">Next ➜</button>
 </section>
 
-<!-- HEARTBEAT MODE -->
+<!-- HEARTBEAT -->
 
 <section id="heartbeatSection" class="hidden">
 <h2>❤️ Every heartbeat says your name…</h2>
-<p>(tap to continue)</p>
+<p>(tap anywhere)</p>
 <div id="typeText"></div>
 </section>
 
@@ -124,10 +122,8 @@ color:white;
 
 <section id="proposal" class="hidden">
 <h2>Will You Be My Valentine? 💘</h2>
-
-<button onclick="yes()">YES 😍</button>
+<button onclick="sayYes()">YES 😍</button>
 <button id="noBtn">NO 😜</button>
-
 <h3 id="finalMsg"></h3>
 </section>
 
@@ -135,7 +131,23 @@ color:white;
 
 <script>
 
-/* navigation */
+/* ELEMENTS */
+
+const landing = document.getElementById("landing");
+const memories = document.getElementById("memories");
+const reasons = document.getElementById("reasons");
+const future = document.getElementById("future");
+const heartbeatSection = document.getElementById("heartbeatSection");
+const proposal = document.getElementById("proposal");
+
+const music = document.getElementById("music");
+const beat = document.getElementById("beat");
+
+const reasonText = document.getElementById("reasonText");
+const typeText = document.getElementById("typeText");
+const finalMsg = document.getElementById("finalMsg");
+
+/* NAVIGATION */
 
 function start(){
 music.play();
@@ -143,17 +155,17 @@ landing.classList.add("hidden");
 memories.classList.remove("hidden");
 }
 
-function reasons(){
+function showReasons(){
 memories.classList.add("hidden");
-reasonsSection.classList.remove("hidden");
+reasons.classList.remove("hidden");
 }
 
-function future(){
-reasonsSection.classList.add("hidden");
-futureSection.classList.remove("hidden");
+function showFuture(){
+reasons.classList.add("hidden");
+future.classList.remove("hidden");
 }
 
-/* reasons logic */
+/* REASONS LOGIC */
 
 const reasonsList=[
 "Your kindness 💖",
@@ -171,7 +183,7 @@ r=(r+1)%reasonsList.length;
 reasonText.innerText=reasonsList[r];
 }
 
-/* heartbeat mode */
+/* HEARTBEAT MODE */
 
 const paragraph=[
 "In the quiet moments between my heartbeats,",
@@ -187,10 +199,10 @@ const paragraph=[
 
 let p=0;
 
-function heartbeatMode(){
-futureSection.classList.add("hidden");
+function startHeartbeat(){
+future.classList.add("hidden");
 heartbeatSection.classList.remove("hidden");
-document.body.classList.add("heartbeat");
+document.body.classList.add("dark");
 beat.play();
 }
 
@@ -199,9 +211,10 @@ heartbeatSection.addEventListener("click",()=>{
 if(p<paragraph.length){
 typeText.innerHTML+=paragraph[p]+"<br><br>";
 p++;
-}else{
+}
+else{
 beat.pause();
-document.body.classList.remove("heartbeat");
+document.body.classList.remove("dark");
 heartbeatSection.classList.add("hidden");
 proposal.classList.remove("hidden");
 }
@@ -210,16 +223,16 @@ proposal.classList.remove("hidden");
 
 /* YES */
 
-function yes(){
+function sayYes(){
 confetti();
 finalMsg.innerHTML="You just made me the happiest person alive ❤️";
 }
 
-/* runaway NO */
+/* RUNAWAY NO */
 
 const noBtn=document.getElementById("noBtn");
 
-function move(){
+function moveButton(){
 
 const rect=noBtn.getBoundingClientRect();
 
@@ -231,8 +244,8 @@ noBtn.style.left=Math.random()*maxX+"px";
 noBtn.style.top=Math.random()*maxY+"px";
 }
 
-noBtn.addEventListener("mouseover",move);
-noBtn.addEventListener("touchstart",move);
+noBtn.addEventListener("mouseover",moveButton);
+noBtn.addEventListener("touchstart",moveButton);
 
 </script>
 
