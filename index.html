@@ -57,7 +57,6 @@ width:90%;
 max-width:400px;
 border-radius:20px;
 }
-
 </style>
 </head>
 
@@ -71,15 +70,11 @@ border-radius:20px;
 <source src="heartbeat.mp3" type="audio/mp3">
 </audio>
 
-<!-- LANDING -->
-
 <section id="landing">
 <h1>Hey Anjali 💖</h1>
 <p>I made something special for you…</p>
 <button onclick="start()">Start 💫</button>
 </section>
-
-<!-- MEMORIES -->
 
 <section id="memories" class="hidden">
 <h2>Our Memories 📸</h2>
@@ -88,16 +83,12 @@ border-radius:20px;
 <button onclick="nextMemory()">Next ➜</button>
 </section>
 
-<!-- REASONS -->
-
 <section id="reasons" class="hidden">
 <h2>Tap to see why I love you 💖</h2>
 <h3 id="reasonText">Your kindness 💖</h3>
 <button onclick="nextReason()">Tap 💫</button>
 <button onclick="showFuture()">Next ➜</button>
 </section>
-
-<!-- FUTURE -->
 
 <section id="future" class="hidden">
 <h2>Our Future 🌍</h2>
@@ -108,15 +99,11 @@ border-radius:20px;
 <button onclick="startHeartbeat()">Next ➜</button>
 </section>
 
-<!-- HEARTBEAT -->
-
 <section id="heartbeatSection" class="hidden">
 <h2>❤️ Every heartbeat says your name…</h2>
 <p>(tap anywhere)</p>
 <div id="typeText"></div>
 </section>
-
-<!-- PROPOSAL -->
 
 <section id="proposal" class="hidden">
 <h2>Will You Be My Valentine? 💘</h2>
@@ -128,8 +115,6 @@ border-radius:20px;
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-
-/* ELEMENTS */
 
 const landing = document.getElementById("landing");
 const memories = document.getElementById("memories");
@@ -165,6 +150,29 @@ const t=e.touches[0];
 createHeart(t.clientX,t.clientY);
 });
 
+/* IMAGE FALLBACK LOADER */
+
+function loadImageWithFallback(baseName){
+
+const extensions=["jpg","jpeg","JPG","JPEG","png"];
+let index=0;
+
+const img=document.createElement("img");
+
+function tryNext(){
+if(index>=extensions.length){
+img.alt="Image not found";
+return;
+}
+img.src=baseName+"."+extensions[index++];
+}
+
+img.onerror=tryNext;
+tryNext();
+
+return img;
+}
+
 /* START */
 
 function start(){
@@ -176,28 +184,26 @@ showMemory();
 
 /* MEMORIES DATA */
 
-const memoriesData = [
-
-{ type:"image", src:"img1.jpg", caption:"The day we first met ❤️" },
-{ type:"image", src:"img2.jpg", caption:"Us Together 😍" },
-{ type:"image", src:"img3.jpg", caption:"My favourite day with you 🌸" },
-{ type:"video", src:"memory.mp4", caption:"You = my happiest place 🎬💖" },
-{ type:"image", src:"img4.jpg", caption:"Forever starts here 💞" }
-
+const memoriesData=[
+{type:"image",src:"img1",caption:"The day we first met ❤️"},
+{type:"image",src:"img2",caption:"Us Together 😍"},
+{type:"image",src:"img3",caption:"My favourite day with you 🌸"},
+{type:"video",src:"memory.mp4",caption:"You = my happiest place 🎬💖"},
+{type:"image",src:"img4",caption:"Forever starts here 💞"}
 ];
 
-let memoryIndex = 0;
+let memoryIndex=0;
 
 function showMemory(){
 
-const item = memoriesData[memoryIndex];
+const item=memoriesData[memoryIndex];
 
 memoryContainer.innerHTML="";
 memoryCaption.innerText=item.caption;
 
 if(item.type==="image"){
 music.play();
-memoryContainer.innerHTML=`<img src="${item.src}">`;
+memoryContainer.appendChild(loadImageWithFallback(item.src));
 }
 
 if(item.type==="video"){
@@ -207,20 +213,18 @@ memoryContainer.innerHTML=`
 <source src="${item.src}" type="video/mp4">
 </video>`;
 }
+
 }
 
 function nextMemory(){
-
 memoryIndex++;
-
-if(memoryIndex < memoriesData.length){
+if(memoryIndex<memoriesData.length){
 showMemory();
 }else{
 memories.classList.add("hidden");
 reasons.classList.remove("hidden");
 music.play();
 }
-
 }
 
 /* REASONS */
@@ -272,43 +276,32 @@ beat.play();
 }
 
 heartbeatSection.addEventListener("click",()=>{
-
 if(p<paragraph.length){
 typeText.innerHTML+=paragraph[p]+"<br><br>";
 p++;
-}
-else{
+}else{
 beat.pause();
 document.body.classList.remove("dark");
 heartbeatSection.classList.add("hidden");
 proposal.classList.remove("hidden");
 music.play();
 }
-
 });
 
 /* YES MESSAGE */
 
 function sayYes(){
-
 confetti();
-
-finalMsg.innerHTML = `
+finalMsg.innerHTML=`
 YASSSS 😍❤️<br><br>
-
 Mission “Make You Mine Forever” — SUCCESSFUL 🎉<br><br>
-
 So Madam…<br>
 Get ready for tomorrow 😌✨<br><br>
-
 🏍️ First — a long romantic bike ride (of course you'll drive 💖)<br><br>
-
 Then — a coffee date ☕<br>
 where time will stop<br>
 and it will just be you… and me… and your beautiful smile.<br><br>
-
 Dress code: Cute as always ❤️<br><br>
-
 Be ready, my love 💖
 `;
 }
